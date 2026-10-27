@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+}
+
+@layer utilities {
+  .search-bar {
+    @apply rounded-lg bg-(--el-bg-color) pt-4.5 px-4 border border-(--el-border-color);
+  }
+}

@@ -1,0 +1,81 @@
+import { getToken, removeToken, setToken } from '@/utils/cookies'
+import { loginApi } from '@/api/auth'
+import type { LoginParams, LoginToken } from '@/api/auth/types'
+
+/** 归一化登录接口返回的 token：兼容纯字符串与对象两种形态 */
+function normalizeToken(payload: LoginToken | undefined): string {
+  if (!payload) {
+    return ''
+  }
+  if (typeof payload === 'string') {
+    return payload
+  }
+  return payload.token || ''
+}
+
+export const useUserStore = defineStore(
+  'user',
+  () => {
+    const token = ref<string | undefined>(getToken())
+    const id = ref<string | undefined>('')
+    const name = ref<string | undefined>('')
+    const nickName = ref<string | undefined>('')
+    const avatar = ref<string | undefined>('')
+    const roles = ref<string[]>([])
+    const permissions = ref<string[]>([])
+
+    /**
+     * 账号密码登录。
+     * 成功后把 token 写入 store 与 Cookie，后续请求由 http 拦截器统一带上。
+     * 失败时抛出 Error，文案由接口层统一处理，页面直接展示 error.message 即可。
+     */
+    const login = async (userInfo: LoginParams): Promise<void> => {
+      const payload = await loginApi(userInfo)
+      const accessToken = normalizeToken(payload)
+
+      if (!accessToken) {
+        throw new Error('登录失败：接口未返回有效 token')
+      }
+
+      token.value = accessToken
+      setToken(accessToken)
+    }
+
+    const getInfo = () => {}
+
+    /**
+     * 清空本地登录态，**不发任何请求**。
+     *
+     * 退出登录与「登录已失效（401）」共用这条路径：后者手上拿的就是过期 token，
+     * 再去调 logoutApi 只会又拿一个 401，所以必须有一条纯本地的清理方式。
+     */
+    const clearSession = (): void => {
+      token.value = ''
+      roles.value = []
+      permissions.value = []
+      removeToken()
+    }
+
+    const logOut = () => {}
+
+    return {
+      token,
+      id,
+      name,
+      nickName,
+      avatar,
+      roles,
+      permissions,
+      login,
+      getInfo,
+      clearSession,
+      logOut
+    }
+  },
+  {
+    persist: {
+      key: 'user',
+      storage: localStorage
+    }
+  }
+)
