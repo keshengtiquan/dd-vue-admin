@@ -26,3 +26,27 @@ export interface LoginParams {
  * 也可能是包含 token 的对象，因此这里做兼容声明，由调用方统一归一化。
  */
 export type LoginToken = string | { token: string; tokenName?: string; expiresIn?: number }
+
+export interface CurrentUserInfo {
+  user: { userId: number | string; userName: string; nickName?: string; avatar?: string }
+  roles: string[]
+  permissions: string[]
+}
+
+export interface BackendMenuRoute {
+  menuId: number | string
+  menuName: string
+  title: string
+  parentId: number | string
+  orderNum: number
+  path: string
+  component?: string | null
+  query?: string | null
+  isFrame?: boolean
+  isCache?: boolean
+  isAffix?: boolean
+  menuType: 'M' | 'C'
+  visible?: string
+  perms?: string
+  icon?: string
+}

@@ -34,7 +34,8 @@
 
 <script setup lang="ts">
 import type { MenuInfo } from 'antdv-next'
-import { dynamicRoute } from '@/router/routes'
+import { accessMode, dynamicRoute } from '@/router/routes'
+import { getBackendRoutes } from '@/router/backend'
 import { isExternalUrl } from '@/utils/route'
 import { useAppStore } from '@/stores/modules/app'
 import { findAncestorKeys, toMenuItems, toMenuTree } from '@/layout/utils/menu'
@@ -52,7 +53,10 @@ const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
 
-const menuTree = computed(() => toMenuTree(dynamicRoute))
+const menuTree = computed(() => {
+  const routes = accessMode === 'backend' ? getBackendRoutes() : dynamicRoute
+  return toMenuTree(routes)
+})
 const menuItems = computed(() => toMenuItems(menuTree.value))
 
 /** 当前高亮项直接用 path 匹配，菜单叶子的 index 就是完整路径 */
@@ -126,7 +130,7 @@ function handleMenuClick(info: MenuInfo): void {
   padding: 0 16px;
   gap: 10px;
   align-items: center;
-  border-bottom: 1px solid var(--color-zinc-100, #f4f4f5);
+  border-bottom: 1px solid var(--color-zinc-200, #e4e4e7);
 }
 
 .sider-logo--collapsed {

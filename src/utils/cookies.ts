@@ -2,14 +2,27 @@ import { TOKEN_KEY } from '@/constants/auth'
 import Cookies from 'js-cookie'
 
 export function getToken(): string | undefined {
-  return Cookies.get(TOKEN_KEY)
+  const token = localStorage.getItem(TOKEN_KEY)
+  if (token) return token
+
+  // 兼容升级前已登录的用户：将旧 Cookie token 迁移到 localStorage。
+  const legacyToken = Cookies.get(TOKEN_KEY)
+  if (legacyToken) {
+    localStorage.setItem(TOKEN_KEY, legacyToken)
+    Cookies.remove(TOKEN_KEY)
+    return legacyToken
+  }
+  return undefined
 }
 
 export function setToken(token: string): string | undefined {
-  return Cookies.set(TOKEN_KEY, token)
+  localStorage.setItem(TOKEN_KEY, token)
+  Cookies.remove(TOKEN_KEY)
+  return token
 }
 
 export function removeToken(): void {
+  localStorage.removeItem(TOKEN_KEY)
   Cookies.remove(TOKEN_KEY)
 }
 

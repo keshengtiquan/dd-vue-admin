@@ -1,5 +1,5 @@
 import { get, post } from '@/utils/http'
-import type { CaptchaResult, LoginParams, LoginToken } from './types'
+import type { BackendMenuRoute, CaptchaResult, CurrentUserInfo, LoginParams, LoginToken } from './types'
 
 /**
  * 图形验证码接口。
@@ -17,3 +17,7 @@ export const captchaImage = () => {
 export const loginApi = (data: LoginParams) => {
   return post<LoginToken>('/auth/login', data)
 }
+
+export const getCurrentUserApi = () => get<CurrentUserInfo>('/auth/getUserInfo')
+
+export const getCurrentUserRoutesApi = () => get<BackendMenuRoute[]>('/system/menu/routes')

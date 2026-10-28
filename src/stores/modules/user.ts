@@ -1,5 +1,5 @@
 import { getToken, removeToken, setToken } from '@/utils/cookies'
-import { loginApi } from '@/api/auth'
+import { getCurrentUserApi, loginApi } from '@/api/auth'
 import type { LoginParams, LoginToken } from '@/api/auth/types'
 
 /** 归一化登录接口返回的 token：兼容纯字符串与对象两种形态 */
@@ -26,7 +26,7 @@ export const useUserStore = defineStore(
 
     /**
      * 账号密码登录。
-     * 成功后把 token 写入 store 与 Cookie，后续请求由 http 拦截器统一带上。
+     * 成功后把 token 写入 store 与 localStorage，后续请求由 http 拦截器统一带上。
      * 失败时抛出 Error，文案由接口层统一处理，页面直接展示 error.message 即可。
      */
     const login = async (userInfo: LoginParams): Promise<void> => {
@@ -41,7 +41,15 @@ export const useUserStore = defineStore(
       setToken(accessToken)
     }
 
-    const getInfo = () => {}
+    const getInfo = async (): Promise<void> => {
+      const info = await getCurrentUserApi()
+      id.value = String(info.user.userId)
+      name.value = info.user.userName
+      nickName.value = info.user.nickName || info.user.userName
+      avatar.value = info.user.avatar || ''
+      roles.value = info.roles || []
+      permissions.value = info.permissions || []
+    }
 
     /**
      * 清空本地登录态，**不发任何请求**。
@@ -53,6 +61,10 @@ export const useUserStore = defineStore(
       token.value = ''
       roles.value = []
       permissions.value = []
+      id.value = ''
+      name.value = ''
+      nickName.value = ''
+      avatar.value = ''
       removeToken()
     }
 

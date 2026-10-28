@@ -87,7 +87,7 @@ export function findAncestorKeys(
 const FALLBACK_ICON = 'circle-dot'
 
 function renderIcon(name?: string | null): () => VNode {
-  return () => h(AppIcon, { name: name || FALLBACK_ICON, size: 16 })
+  return () => h(AppIcon, { name: name || FALLBACK_ICON, size: 16, style: { marginRight: '8px' } })
 }
 
 /**
