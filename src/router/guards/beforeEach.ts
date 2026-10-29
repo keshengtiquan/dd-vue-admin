@@ -1,9 +1,8 @@
 import type { RouteLocationNormalized, Router } from 'vue-router'
-import { getToken } from '@/utils/cookies'
+import { getToken } from '@/utils/localStorage'
 import { isPathMatch } from '@/utils/validate'
 import { useUserStore } from '@/stores/modules/user'
 import { accessMode } from '@/router/routes'
-import { loadBackendRoutes } from '@/router/backend'
 
 /** 免登录白名单 */
 const whiteList = ['/login', '/404']
@@ -31,19 +30,14 @@ export function setupBeforeEachGuard(router: Router): void {
     }
 
     const userStore = useUserStore()
-    if (!initialized) {
-      try {
-        await userStore.getInfo()
-        if (accessMode === 'backend') {
-          const backendRoutes = await loadBackendRoutes()
-          backendRoutes.forEach((route) => router.addRoute(route))
-        }
-        initialized = true
-        return { ...to, replace: true }
-      } catch (error) {
-        userStore.clearSession()
-        return `/login?redirect=${to.fullPath}`
+    try {
+      await userStore.getInfo()
+      if (accessMode === 'backend') {
       }
+      return { ...to, replace: true }
+    } catch (error) {
+      userStore.clearSession()
+      return `/login?redirect=${to.fullPath}`
     }
 
     if (isWhiteList(to.path)) {

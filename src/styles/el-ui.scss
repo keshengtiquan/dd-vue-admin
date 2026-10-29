@@ -1,0 +1,166 @@
+:root {
+  --el-border-radius-base: 7px !important;
+  --el-border-radius-small: 5px !important;
+  --el-popover-border-radius: calc(var(--el-border-radius-base) + 4px);
+}
+.el-table {
+  --el-table-text-color: var(--el-text-color-primary) !important;
+  --el-table-header-text-color: var(--el-text-color-primary) !important;
+  --el-table-header-bg-color: var(--el-fill-color-lighter) !important;
+  border-radius: var(--el-border-radius-base) !important;
+}
+
+.el-table__header thead tr th .cell {
+  border-right: 1px solid var(--el-table-border-color) !important;
+}
+.el-table__header thead tr th:last-child .cell {
+  border-right: none !important;
+}
+
+/*表格外框*/
+.el-table--border {
+  border: 1px solid var(--el-table-border-color) !important;
+}
+/*表格外框*/
+.el-table--border::before,
+.el-table--border::after,
+.el-table--border .el-table__inner-wrapper::after,
+.el-table--border .el-table__inner-wrapper::before {
+  display: none !important;
+}
+
+/* 左边线已由上面的真 border 负责：这个 patch 在 inner-wrapper 里 left:0（真 border 内侧 1px），
+   不关掉左边会比其它三边厚一倍，圆角处也会被裁出缺口 */
+.el-table--border .el-table__border-left-patch {
+  display: none !important;
+}
+
+.el-table--border .el-table__cell {
+  border-right: none !important;
+}
+
+.el-table__column-filter-trigger i {
+  vertical-align: -0.13em !important ;
+  margin-left: 2px !important;
+}
+
+.el-pager li.is-active {
+  box-sizing: border-box;
+  border: 1px solid var(--el-color-primary) !important;
+  border-radius: var(--el-border-radius-base) !important;
+}
+
+.el-input .el-input__wrapper.is-focus,
+.el-textarea .el-textarea__inner:focus,
+.el-textarea .el-textarea__inner.is-focus,
+.el-select .el-select__wrapper:not(.is-disabled).is-focused,
+.el-cascader .el-input.el-input--suffix .el-input__wrapper.is-focus,
+.el-cascader .el-input.el-input--suffix.is-focus .el-input__wrapper,
+.el-input.el-date-editor.is-focus .el-input__wrapper,
+.el-range-editor.el-input__wrapper.is-active:not(.is-disabled),
+body .el-input-number:not(.is-disabled) .el-input .el-input__wrapper.is-focus {
+  box-sizing: border-box;
+  background: transparent;
+  box-shadow:
+    0 0 0 1px var(--el-color-primary) inset,
+    0 0 2px 3px var(--el-color-primary-light-8);
+}
+
+/* 基础态：外发光为同尺寸透明，过渡时只淡入颜色、不产生尺寸变化 */
+.el-input .el-input__wrapper,
+.el-textarea .el-textarea__inner,
+.el-select .el-select__wrapper,
+.el-date-editor.el-range-editor.el-input__wrapper {
+  transition:
+    box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.el-dropdown-menu {
+  --el-popper-border-radius: 10px !important;
+  padding: 6px !important;
+  border-radius: 10px !important;
+  border: none !important;
+
+  .el-dropdown-menu__item {
+    padding: 5px 5px !important;
+    border-radius: 6px !important;
+
+    &:hover:not(.is-disabled) {
+      color: var(--el-text-color-primary) !important;
+      background-color: var(--el-fill-color) !important;
+    }
+
+    &:focus:not(.is-disabled) {
+      color: var(--el-text-color-primary) !important;
+      background-color: var(--el-fill-color) !important;
+    }
+  }
+}
+
+// 隐藏 select、dropdown 的三角
+.el-select__popper,
+.el-dropdown__popper {
+  margin-top: -6px !important;
+
+  // .el-popper__arrow {
+  //   display: none;
+  // }
+}
+
+// 修改 el-select 样式
+.el-select__popper:not(.el-tree-select__popper) {
+  .el-select-dropdown__list {
+    padding: 5px !important;
+
+    .el-select-dropdown__item {
+      height: 32px !important;
+      line-height: 32px !important;
+      border-radius: 6px !important;
+
+      &.is-selected {
+        color: var(--el-color-primary) !important;
+        font-weight: 400 !important;
+        background-color: var(--el-color-primary-light-8) !important;
+      }
+
+      &:hover {
+        color: var(--el-color-primary) !important;
+        background-color: var(--el-color-primary-light-8) !important;
+      }
+    }
+
+    .el-select-dropdown__item:hover ~ .is-selected,
+    .el-select-dropdown__item.is-selected:has(~ .el-select-dropdown__item:hover) {
+      background-color: transparent !important;
+    }
+  }
+}
+
+// 修改 el-tree-select 样式
+.el-tree-select__popper {
+  .el-select-dropdown__list {
+    padding: 5px !important;
+
+    .el-tree-node {
+      .el-tree-node__content {
+        height: 36px !important;
+        border-radius: 6px !important;
+
+        &:hover {
+          background-color: var(--el-fill-color) !important;
+        }
+      }
+    }
+  }
+}
+
+.el-drawer {
+  .el-drawer__header {
+    margin-bottom: 20px !important;
+  }
+  .el-drawer__body {
+    padding: 0 var(--el-drawer-padding-primary) !important;
+  }
+}

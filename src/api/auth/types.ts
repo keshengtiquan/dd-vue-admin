@@ -25,7 +25,7 @@ export interface LoginParams {
  * 后端接口文档对该字段做过泛型擦除（标记为 int64），实际返回可能是纯 token 字符串，
  * 也可能是包含 token 的对象，因此这里做兼容声明，由调用方统一归一化。
  */
-export type LoginToken = string | { token: string; tokenName?: string; expiresIn?: number }
+export type LoginToken = { token: string }
 
 export interface CurrentUserInfo {
   user: { userId: number | string; userName: string; nickName?: string; avatar?: string }

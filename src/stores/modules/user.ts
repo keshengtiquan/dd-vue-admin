@@ -1,17 +1,6 @@
-import { getToken, removeToken, setToken } from '@/utils/cookies'
 import { getCurrentUserApi, loginApi } from '@/api/auth'
-import type { LoginParams, LoginToken } from '@/api/auth/types'
-
-/** 归一化登录接口返回的 token：兼容纯字符串与对象两种形态 */
-function normalizeToken(payload: LoginToken | undefined): string {
-  if (!payload) {
-    return ''
-  }
-  if (typeof payload === 'string') {
-    return payload
-  }
-  return payload.token || ''
-}
+import type { LoginParams } from '@/api/auth/types'
+import { getToken, removeToken, setToken } from '@/utils/localStorage'
 
 export const useUserStore = defineStore(
   'user',
@@ -31,7 +20,7 @@ export const useUserStore = defineStore(
      */
     const login = async (userInfo: LoginParams): Promise<void> => {
       const payload = await loginApi(userInfo)
-      const accessToken = normalizeToken(payload)
+      const accessToken = payload.token
 
       if (!accessToken) {
         throw new Error('登录失败：接口未返回有效 token')

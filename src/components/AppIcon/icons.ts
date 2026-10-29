@@ -63,6 +63,7 @@ import {
   Plus,
   PenLine,
   Power,
+  Printer,
   Radio,
   ScrollText,
   Search,
@@ -80,6 +81,7 @@ import {
   TextCursorInput,
   Trash,
   Timer,
+  UnfoldVertical,
   Upload,
   User,
   Users,
@@ -89,7 +91,9 @@ import {
   Funnel,
   LogOut,
   Maximize,
+  Maximize2,
   Minimize,
+  Minimize2,
   RotateCw,
   X
 } from '@lucide/vue'
@@ -159,6 +163,7 @@ const lucideIcons: Record<string, Component> = {
   Plus,
   PenLine,
   Power,
+  Printer,
   Radio,
   ScrollText,
   Search,
@@ -176,6 +181,7 @@ const lucideIcons: Record<string, Component> = {
   TextCursorInput,
   Trash,
   Timer,
+  UnfoldVertical,
   Upload,
   User,
   Users,
@@ -185,14 +191,19 @@ const lucideIcons: Record<string, Component> = {
   Funnel,
   LogOut,
   Maximize,
+  Maximize2,
   Minimize,
+  Minimize2,
   RotateCw,
   X
 }
 
-/** PascalCase → kebab-case（CircleUserRound → circle-user-round） */
+/** PascalCase → kebab-case（CircleUserRound → circle-user-round，Maximize2 → maximize-2） */
 function toKebab(name: string): string {
-  return name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
+  return name
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .replace(/([a-zA-Z])([0-9])/g, '$1-$2')
+    .toLowerCase()
 }
 
 /** 同时登记 PascalCase 与 kebab-case 两种键，两种写法都能取到 */

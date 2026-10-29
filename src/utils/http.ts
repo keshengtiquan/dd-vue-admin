@@ -7,7 +7,7 @@ import axios, {
 import qs from 'qs'
 import type { ApiResult } from '@/types/http'
 import { REQUEST_TIMEOUT, SUCCESS_CODE } from '@/constants/auth'
-import { getToken } from './cookies'
+import { getToken } from './localStorage'
 
 /** 环境变量：API 基础路径、是否跨域携带 Cookie */
 const { VITE_API_URL, VITE_WITH_CREDENTIALS } = import.meta.env
