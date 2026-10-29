@@ -181,8 +181,8 @@ const userStore = useUserStore()
  * 这样提交时不必再做一层映射，少一处出错点。
  */
 const form = reactive({
-  userName: '',
-  password: '',
+  userName: 'admin',
+  password: '123456',
   code: '',
   uuid: ''
 })

@@ -32,7 +32,8 @@ export const useUserStore = defineStore(
 
     const getInfo = async (): Promise<void> => {
       const info = await getCurrentUserApi()
-      id.value = String(info.user.userId)
+      // 缺字段时留空串而不是 "undefined"，守卫用 id 判空才不会误判成已加载
+      id.value = info.user?.userId != null ? String(info.user.userId) : ''
       name.value = info.user.userName
       nickName.value = info.user.nickName || info.user.userName
       avatar.value = info.user.avatar || ''
@@ -76,7 +77,14 @@ export const useUserStore = defineStore(
   {
     persist: {
       key: 'user',
-      storage: localStorage
+      storage: localStorage,
+      /**
+       * 只持久化 token。
+       * id / roles / permissions 属于会话内数据，必须每次进入应用重新拉取：
+       * 若一起缓存，刷新后守卫会认为「已有用户信息」而跳过 getInfo，
+       * 权限调整后前端仍会拿着旧权限继续用。
+       */
+      pick: ['token']
     }
   }
 )
