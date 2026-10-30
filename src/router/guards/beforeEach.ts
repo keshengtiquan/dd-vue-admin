@@ -1,7 +1,9 @@
-import type { RouteLocationNormalized, Router } from 'vue-router'
+import type { RouteLocationNormalized, RouteRecordRaw, Router } from 'vue-router'
+import { accessMode } from '@/router/routes'
+import { usePermissionStore } from '@/stores/modules/permission'
+import { useUserStore } from '@/stores/modules/user'
 import { getToken } from '@/utils/localStorage'
 import { isPathMatch } from '@/utils/validate'
-import { useUserStore } from '@/stores/modules/user'
 
 /** 免登录白名单 */
 const whiteList = ['/login', '/404']
@@ -10,7 +12,16 @@ const isWhiteList = (path: string): boolean => {
   return whiteList.some((pattern: string) => isPathMatch(pattern, path))
 }
 
-export function setupBeforeEachGuard(router: Router): void {
+/**
+ * 全局前置守卫
+ *
+ * @param router 路由实例
+ * @param registerRoutes 注册动态路由的方法（由 router/index.ts 传入，避免与它循环依赖）
+ */
+export function setupBeforeEachGuard(
+  router: Router,
+  registerRoutes: (routes: RouteRecordRaw[]) => void
+): void {
   router.beforeEach(async (to: RouteLocationNormalized) => {
     // ---------------------- 未登录 ----------------------
     if (!getToken()) {
@@ -28,36 +39,42 @@ export function setupBeforeEachGuard(router: Router): void {
     }
 
     const userStore = useUserStore()
-
-    /**
-     * 已有用户信息就放行。
-     *
-     * 这里用 id 而不是 roles：roles 可能合法为空（账号没配角色），拿空数组当「未加载」
-     * 会导致每次导航都重新拉取并重走导航，再次触发 Infinite redirect。
-     * 另外 user store 只持久化 token（见 stores/modules/user.ts 的 pick），
-     * 所以刷新页面后 id 一定是空的，会重新拉取最新的信息与权限。
-     */
-    if (userStore.id) {
-      return true
-    }
+    const permissionStore = usePermissionStore()
 
     try {
-      await userStore.getInfo()
+      /**
+       * 1. 用户信息。
+       * 判空用 id 而不是 roles：roles 可能合法为空（账号没配角色），拿空数组当「未加载」
+       * 会导致每次导航都重新拉取并重走导航，再次触发 Infinite redirect。
+       * user store 只持久化 token（见 stores/modules/user.ts 的 pick），所以刷新后 id 必为空。
+       */
+      if (!userStore.id) {
+        await userStore.getInfo()
+        // 接口成功但没拿到有效用户标识：按会话失效处理
+        if (!userStore.id) {
+          throw new Error('用户信息为空')
+        }
+      }
+
+      /**
+       * 2. 动态路由。
+       * backend 模式下业务路由全部来自 /system/menu/routes，必须先注册再放行，
+       * 否则刷新页面时会先命中静态注册的 404（catch-all）。
+       */
+      if (accessMode === 'backend' && !permissionStore.loaded) {
+        const dynamicRoutes = await permissionStore.generateRoutes()
+        registerRoutes(dynamicRoutes)
+        // 新路由此刻才进路由表，重走本次导航让它参与匹配。
+        // 只带 path/query/hash，避免把 matched 等内部字段一起传回去。
+        return { path: to.path, query: to.query, hash: to.hash, replace: true }
+      }
     } catch {
-      // token 失效或接口异常：清本地态并回登录页
+      // token 失效 / 接口异常 / 菜单拉取失败：清本地态并回登录页
       userStore.clearSession()
+      permissionStore.reset()
       return `/login?redirect=${to.fullPath}`
     }
 
-    // 接口成功但没拿到有效用户标识：按会话失效处理。
-    // 不加这道判断的话，紧接着的重走导航会再次命中 id 为空的分支，形成死循环。
-    if (!userStore.id) {
-      userStore.clearSession()
-      return `/login?redirect=${to.fullPath}`
-    }
-
-    // 首次拉取完成后重走本次导航，让依赖用户信息注册的路由参与匹配。
-    // 只带 path/query/hash，避免把 matched 等内部字段一起传回去。
-    return { path: to.path, query: to.query, hash: to.hash, replace: true }
+    return true
   })
 }

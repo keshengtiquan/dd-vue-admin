@@ -75,7 +75,7 @@ export default ({ mode }: { mode: string }) => {
         resolvers: [ElementPlusResolver({ importStyle: 'sass' })],
         eslintrc: {
           enabled: true,
-          filepath: 'src/types/.auto-import.json',
+          filepath: 'src/types/import/.auto-import.json',
           globalsPropValue: true
         }
       }),

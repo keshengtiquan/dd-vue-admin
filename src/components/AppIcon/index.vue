@@ -1,11 +1,5 @@
 <template>
-  <component
-    :is="icon"
-    v-if="icon"
-    :size="props.size"
-    :style="iconStyle"
-    v-bind="restAttrs"
-  />
+  <component :is="icon" v-if="icon" :size="props.size" :style="iconStyle" v-bind="restAttrs" />
 </template>
 
 <script setup lang="ts">
@@ -36,7 +30,9 @@ const attrs = useAttrs()
  * 颜色请用 `stroke="currentColor"` 的继承特性，在父元素上设 color。
  */
 const restAttrs = computed<Record<string, unknown>>(() => {
-  const { class: _class, style: _style, ...rest } = attrs
+  const rest: Record<string, unknown> = { ...attrs }
+  delete rest.class
+  delete rest.style
   return rest
 })
 

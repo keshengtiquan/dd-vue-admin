@@ -85,6 +85,7 @@ import {
   Upload,
   User,
   Users,
+  UserKey,
   Webhook,
   Wrench,
   RefreshCcw,
@@ -95,7 +96,8 @@ import {
   Minimize,
   Minimize2,
   RotateCw,
-  X
+  X,
+  SquareMenu
 } from '@lucide/vue'
 
 /** 登记为「可直接按名字使用」的 lucide 图标（同时提供 PascalCase 与 kebab-case 两种键） */
@@ -195,7 +197,9 @@ const lucideIcons: Record<string, Component> = {
   Minimize,
   Minimize2,
   RotateCw,
-  X
+  X,
+  UserKey,
+  SquareMenu
 }
 
 /** PascalCase → kebab-case（CircleUserRound → circle-user-round，Maximize2 → maximize-2） */

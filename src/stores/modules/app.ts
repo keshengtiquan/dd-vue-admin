@@ -24,6 +24,10 @@ export const useAppStore = defineStore(
       mobileSidebarOpen.value = !mobileSidebarOpen.value
     }
 
+    function setMobileSidebarOpen(value: boolean): void {
+      mobileSidebarOpen.value = value
+    }
+
     function closeMobileSidebar(): void {
       mobileSidebarOpen.value = false
     }
@@ -34,6 +38,7 @@ export const useAppStore = defineStore(
       toggleSidebar,
       setSidebarCollapsed,
       toggleMobileSidebar,
+      setMobileSidebarOpen,
       closeMobileSidebar
     }
   },

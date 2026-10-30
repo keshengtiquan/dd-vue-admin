@@ -15,8 +15,10 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 // 读取 .auto-import.json 文件的内容，并将其解析为 JSON 对象
+// 路径要和 vite.config.ts 里 AutoImport.eslintrc.filepath 保持一致，
+// 否则 eslint 会因为找不到文件直接启动失败（这个文件由 vite 启动/构建时生成）
 const autoImportConfig = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, '.auto-import.json'), 'utf-8')
+  fs.readFileSync(path.resolve(__dirname, 'src/types/import/.auto-import.json'), 'utf-8')
 )
 
 export default [

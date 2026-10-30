@@ -149,6 +149,25 @@ function toMenuLeaf(node: MenuNodeLike, path: string): MenuLeaf {
 }
 
 /**
+ * 拼接父子路径（子路径以 '/' 开头时视为绝对路径，直接使用）
+ *
+ * 与 resolveMenuPath 的区别：那个是给菜单渲染算 index 用的（外链原样返回），
+ * 这个只做纯字符串拼接，用于生成路由 path。
+ */
+export function joinRoutePath(parentPath: string, path: string): string {
+  if (!path) {
+    return parentPath
+  }
+  if (path.startsWith('/')) {
+    return path
+  }
+  if (!parentPath) {
+    return `/${path}`
+  }
+  return `${parentPath.replace(/\/+$/, '')}/${path}`.replace(/\/{2,}/g, '/')
+}
+
+/**
  * 计算菜单项是否应「降级为单个菜单项」渲染（与 RuoYi 的 hasOneShowingChild 行为一致）：
  * - 无可见子菜单 → 自身作为叶子；
  * - 恰有一个可见子菜单、且该子菜单没有可见子菜单 → 用该子菜单作为叶子（省掉一层无意义的嵌套）；

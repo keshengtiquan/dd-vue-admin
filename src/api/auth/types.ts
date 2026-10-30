@@ -32,21 +32,3 @@ export interface CurrentUserInfo {
   roles: string[]
   permissions: string[]
 }
-
-export interface BackendMenuRoute {
-  menuId: number | string
-  menuName: string
-  title: string
-  parentId: number | string
-  orderNum: number
-  path: string
-  component?: string | null
-  query?: string | null
-  isFrame?: boolean
-  isCache?: boolean
-  isAffix?: boolean
-  menuType: 'M' | 'C'
-  visible?: string
-  perms?: string
-  icon?: string
-}

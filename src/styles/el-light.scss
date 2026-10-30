@@ -1,5 +1,17 @@
 @forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: (
+    'primary': (
+      'base': #2f54eb,
+      // 在这里设置你的主色
+    )
+  ),
   $text-color: (
     'primary': #000000
+  ),
+  $table: (
+    'border-color': #e3e3e3
+  ),
+  $fill-color: (
+    'light': #f7f7f7
   )
 );

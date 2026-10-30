@@ -22,7 +22,10 @@ const mergeRouteMoudles = (routerModules: Record<string, unknown>) => {
 export const dynamicRoute = mergeRouteMoudles(dynamicRouteFiles)
 
 export const accessMode = import.meta.env.VITE_ACCESS_MODE || 'frontend'
-// 首页作为固定入口保留；backend 模式下其余业务路由由菜单接口生成。
-const homeRoute = dynamicRoute.filter((route) => route.name === 'home')
+/**
+ * 首页固定项：不随后端菜单走。
+ * backend 模式下它是唯一静态注册的业务路由，其余由 /system/menu/routes 生成。
+ */
+export const homeRoute = dynamicRoute.filter((route) => route.name === 'home')
 export const routes =
   accessMode === 'backend' ? [...coreRoute, ...homeRoute] : [...coreRoute, ...dynamicRoute]
